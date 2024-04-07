@@ -1,7 +1,6 @@
 
 using LibrarySystem.Api.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace LibrarySystem.Api
 {
@@ -10,6 +9,15 @@ namespace LibrarySystem.Api
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    policy =>
+                    {
+                        policy.WithOrigins("http://localhost:3000");
+                    });
+            });
 
             // Add services to the container.
 
@@ -32,6 +40,8 @@ namespace LibrarySystem.Api
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors();
 
             app.UseAuthorization();
 
