@@ -1,13 +1,18 @@
 import Authors from "../pages/author/Authors";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import CreateAuthor from "../pages/author/CreateAuthor";
+import Home from "../pages/home/Home";
+import NavigationBar from "../components/NavBar";
 
 export const appRoutes = {
+  home: {
+    index: "/",
+  },
   author: {
     index: "/author",
     create: "/author/create",
     update: {
-      template: "/author/{:id}",
+      template: "/author/:id",
       route: (id: number) => {
         return `/author/${id}`;
       },
@@ -23,27 +28,36 @@ export const appRoutes = {
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <Authors />,
+    path: appRoutes.home.index,
+    element: withLayout(Home),
   },
   {
     path: appRoutes.author.index,
-    element: <Authors />,
+    element: withLayout(Authors),
   },
   {
     path: appRoutes.author.create,
-    element: <CreateAuthor />,
+    element: withLayout(CreateAuthor),
   },
   {
     path: appRoutes.author.update.template,
-    element: <CreateAuthor />,
+    element: withLayout(CreateAuthor),
   },
   {
     path: appRoutes.author.get.template,
-    element: <div>Detail Page</div>,
+    element: withLayout(CreateAuthor),
   },
 ]);
 
 export const Routes = () => {
-  return <RouterProvider router={router} />;
+  return <RouterProvider router={router}></RouterProvider>;
 };
+
+function withLayout(Component: React.FC) {
+  return (
+    <>
+      <NavigationBar />
+      <Component></Component>
+    </>
+  );
+}

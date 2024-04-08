@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, FC } from "react";
 import { Button, Container } from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 import { SubmitHandler, useForm } from "react-hook-form";
 import {
   useAddAuthorMutation,
   useGetAuthorQuery,
+  useUpdateAuthorMutation,
 } from "../../api/author/authorApi";
 import { toast } from "react-toastify";
 import Row from "react-bootstrap/Row";
@@ -12,39 +13,55 @@ import Col from "react-bootstrap/Col";
 import { useNavigate, useParams } from "react-router-dom";
 import { appRoutes } from "../../routes/Routes";
 import { Author } from "../../api/author/authorModel";
+import dayjs from "dayjs";
 
-type FormFileds = {
-  name: string;
-  email: string;
-  dateOfBirth: Date;
-};
-const CreateAuthor = () => {
-  const [author, setAuthor] = useState<Author>(Object);
-  const [editMode, setEditMode] = useState<Boolean>(false);
+const CreateAuthor: FC = () => {
   const { id } = useParams();
+  const { data } = useGetAuthorQuery(id!);
   const navigate = useNavigate();
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
-  } = useForm<FormFileds>();
+  } = useForm<Author>({
+    defaultValues: {
+      name: "",
+      email: "",
+      dateOfBirth: dayjs().format("YYYY-MM-DD"),
+    },
+  });
   const [addAuthor] = useAddAuthorMutation();
-  const { data } = useGetAuthorQuery(id!);
+
+  const [updateAuthor] = useUpdateAuthorMutation();
+
   useEffect(() => {
     if (id && data) {
-      setEditMode(true);
-      setAuthor({ ...data });
-    } else {
-      setEditMode(false);
+      setValue("name", data.name);
+      setValue("email", data.email);
+      setValue("dateOfBirth", dayjs(data.dateOfBirth).format("YYYY-MM-DD"));
     }
   }, [id, data]);
-  const onSubmit: SubmitHandler<FormFileds> = async (data) => {
-    const response = await addAuthor(data);
-    if ("data" in response) {
-      toast.success("Author Created Successfully");
-      navigate(appRoutes.author.index);
+
+  const onSubmit: SubmitHandler<Author> = async (data) => {
+    if (id) {
+      const updateResponse = await updateAuthor({ ...data, id: parseInt(id) });
+      if ("data" in updateResponse) {
+        toast.success("Author updated successfully");
+        navigate(appRoutes.author.index);
+      } else {
+        toast.error("Something went wrong");
+        navigate(appRoutes.author.index);
+      }
     } else {
-      toast.error("Something went wrong");
+      const response = await addAuthor(data);
+      if ("data" in response) {
+        toast.success("Author Created Successfully");
+        navigate(appRoutes.author.index);
+      } else {
+        toast.error("Something went wrong");
+        navigate(appRoutes.author.index);
+      }
     }
   };
   return (
@@ -94,7 +111,6 @@ const CreateAuthor = () => {
           <Col sm={10}>
             <Form.Control
               {...register("dateOfBirth", {
-                valueAsDate: true,
                 required: "please enter date of birth",
               })}
               type="date"

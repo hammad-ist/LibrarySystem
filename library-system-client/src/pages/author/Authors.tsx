@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import { useState, FC } from "react";
 import { Button, Container, Spinner, Table } from "react-bootstrap";
 import {
   useDeleteAuthorMutation,
   useGetAllQuery,
 } from "../../api/author/authorApi";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { appRoutes } from "../../routes/Routes";
 import EditTwoToneIcon from "@mui/icons-material/EditNoteTwoTone";
 import DeleteForeverTwoToneIcon from "@mui/icons-material/DeleteForeverTwoTone";
@@ -13,7 +13,7 @@ import DeleteModal from "../../components/DeleteModal";
 import { Author } from "../../api/author/authorModel";
 import { toast } from "react-toastify";
 
-const Authors = () => {
+const Authors: FC = () => {
   const [deleteAuthor] = useDeleteAuthorMutation();
   const { data, error, isLoading } = useGetAllQuery();
   const [authorToDelete, setAuthorToDelete] = useState<Author | undefined>(

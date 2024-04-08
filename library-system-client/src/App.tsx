@@ -6,7 +6,6 @@ import NavigationBar from "./components/NavBar";
 function App() {
   return (
     <div className="App">
-      <NavigationBar />
       <Routes />
     </div>
   );

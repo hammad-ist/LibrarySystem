@@ -5,7 +5,7 @@ export interface Key {
 export interface CreateOrUpdateAuthor {
   name: string;
   email: string;
-  dateOfBirth: Date;
+  dateOfBirth: string;
 }
 
 export type Author = Key & CreateOrUpdateAuthor;
