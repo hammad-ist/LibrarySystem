@@ -1,6 +1,6 @@
 ﻿using LibrarySystem.Api.Models.Domain;
 
-namespace LibrarySystem.Api.Models.Dto
+namespace LibrarySystem.Api.Models.Dto.AuthorDtos
 {
     public class AuthorDto
     {

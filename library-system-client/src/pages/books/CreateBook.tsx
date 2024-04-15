@@ -3,64 +3,65 @@ import { Button, Container } from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 import { SubmitHandler, useForm } from "react-hook-form";
 import {
-  useAddAuthorMutation,
-  useGetAuthorQuery,
-  useUpdateAuthorMutation,
-} from "../../api/author/authorApi";
+  useAddBookMutation,
+  useGetBookQuery,
+  useUpdateBookMutation,
+} from "../../api/book/bookApi";
 import { toast } from "react-toastify";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { useNavigate, useParams } from "react-router-dom";
 import { AppRoutes } from "../../routes/AppRoutes";
-import { Author } from "../../api/author/authorModel";
-import dayjs from "dayjs";
-
-const CreateAuthor: FC = () => {
+import { Book } from "../../api/book/bookModel";
+import { useGetAllQuery } from "../../api/author/authorApi";
+const CreateBook: FC = () => {
+  const getAuthorsQuery = useGetAllQuery();
   const { id } = useParams();
-  const { data } = useGetAuthorQuery(id!);
+  const { data } = useGetBookQuery(id!);
   const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     setValue,
     formState: { errors, isSubmitting },
-  } = useForm<Author>({
+  } = useForm<Book>({
     defaultValues: {
       name: "",
-      email: "",
-      dateOfBirth: dayjs().format("YYYY-MM-DD"),
+      isbn: "",
+      authorId: undefined,
     },
   });
-  const [addAuthor] = useAddAuthorMutation();
+  const [addBook] = useAddBookMutation();
 
-  const [updateAuthor] = useUpdateAuthorMutation();
+  const [updateBook] = useUpdateBookMutation();
 
   useEffect(() => {
     if (id && data) {
       setValue("name", data.name);
-      setValue("email", data.email);
-      setValue("dateOfBirth", dayjs(data.dateOfBirth).format("YYYY-MM-DD"));
+      setValue("isbn", data.isbn);
+      setValue("authorId", data.authorId);
+      setValue("authorName", data.authorName);
     }
   }, [id, data]);
 
-  const onSubmit: SubmitHandler<Author> = async (data) => {
+  const onSubmit: SubmitHandler<Book> = async (data) => {
     if (id) {
-      const updateResponse = await updateAuthor({ ...data, id: parseInt(id) });
+      const updateResponse = await updateBook({ ...data, id: parseInt(id) });
       if ("data" in updateResponse) {
-        toast.success("Author updated successfully");
-        navigate(AppRoutes.author.index);
+        toast.success("Book updated successfully");
+        navigate(AppRoutes.book.index);
       } else {
         toast.error("Something went wrong");
-        navigate(AppRoutes.author.index);
+        navigate(AppRoutes.book.index);
       }
     } else {
-      const response = await addAuthor(data);
+      const response = await addBook(data);
       if ("data" in response) {
-        toast.success("Author Created Successfully");
-        navigate(AppRoutes.author.index);
+        toast.success("Book Created Successfully");
+        navigate(AppRoutes.book.index);
       } else {
         toast.error("Something went wrong");
-        navigate(AppRoutes.author.index);
+        navigate(AppRoutes.book.index);
       }
     }
   };
@@ -69,16 +70,16 @@ const CreateAuthor: FC = () => {
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Form.Group as={Row} className="mb-3" controlId="formHorizontalEmail">
           <Form.Label column sm={2}>
-            Name
+            Book Name
           </Form.Label>
           <Col sm={10}>
             <Form.Control
               {...register("name", {
-                required: "Please enter author name",
+                required: "Please enter Book name",
                 minLength: 3,
               })}
               type="text"
-              placeholder="Enter Name"
+              placeholder="Enter Book Name"
             />
             {errors.name && (
               <div style={{ color: "red" }}>{errors.name.message}</div>
@@ -88,35 +89,40 @@ const CreateAuthor: FC = () => {
 
         <Form.Group className="mb-3" as={Row} controlId="formHorizontalEmail">
           <Form.Label column sm={2}>
-            Email
+            Book Isbn
           </Form.Label>
           <Col sm={10}>
             <Form.Control
-              {...register("email", {
-                required: "Please enter a valid email",
-                pattern: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g,
+              {...register("isbn", {
+                required: "Please enter Book Isbn",
               })}
-              type="email"
-              placeholder="Enter Email"
+              type="text"
+              placeholder="Enter Isbn"
             />
-            {errors.email && (
-              <div style={{ color: "red" }}>{errors.email.message}</div>
+            {errors.isbn && (
+              <div style={{ color: "red" }}>{errors.isbn.message}</div>
             )}
           </Col>
         </Form.Group>
         <Form.Group className="mb-3" as={Row} controlId="formHorizontalEmail">
           <Form.Label column sm={2}>
-            Date
+            Select Author
           </Form.Label>
           <Col sm={10}>
-            <Form.Control
-              {...register("dateOfBirth", {
-                required: "please enter date of birth",
+            <Form.Select
+              {...register("authorId", {
+                required: "Please select an author",
               })}
-              type="date"
-            />
-            {errors.dateOfBirth && (
-              <div style={{ color: "red" }}>{errors.dateOfBirth.message}</div>
+            >
+              <option value={""}>--Select--</option>
+              {getAuthorsQuery?.data?.map((x, i) => (
+                <option value={x.id} key={i}>
+                  {x.name}
+                </option>
+              ))}
+            </Form.Select>
+            {errors.authorId && (
+              <div style={{ color: "red" }}>{errors.authorId.message}</div>
             )}
           </Col>
         </Form.Group>
@@ -131,4 +137,4 @@ const CreateAuthor: FC = () => {
     </Container>
   );
 };
-export default CreateAuthor;
+export default CreateBook;

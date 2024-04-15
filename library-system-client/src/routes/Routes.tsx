@@ -3,49 +3,56 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import CreateAuthor from "../pages/author/CreateAuthor";
 import Home from "../pages/home/Home";
 import NavigationBar from "../components/NavBar";
-
-export const appRoutes = {
-  home: {
-    index: "/",
-  },
-  author: {
-    index: "/author",
-    create: "/author/create",
-    update: {
-      template: "/author/:id",
-      route: (id: number) => {
-        return `/author/${id}`;
-      },
-    },
-    get: {
-      template: "/author/{:id}",
-      route: (id: number) => {
-        return `/author/${id}`;
-      },
-    },
-  },
-};
+import { AppRoutes } from "./AppRoutes";
+import Books from "../pages/books/Books";
+import CreateBook from "../pages/books/CreateBook";
+import Login from "../pages/login/Login";
+import SignUp from "../pages/signup/SignUp";
 
 const router = createBrowserRouter([
   {
-    path: appRoutes.home.index,
+    path: AppRoutes.authentication.login,
+    element: withLayout(Login),
+  },
+  {
+    path: AppRoutes.authentication.signup,
+    element: withLayout(SignUp),
+  },
+  {
+    path: AppRoutes.home.index,
     element: withLayout(Home),
   },
   {
-    path: appRoutes.author.index,
+    path: AppRoutes.author.index,
     element: withLayout(Authors),
   },
   {
-    path: appRoutes.author.create,
+    path: AppRoutes.author.create,
     element: withLayout(CreateAuthor),
   },
   {
-    path: appRoutes.author.update.template,
+    path: AppRoutes.author.update.template,
     element: withLayout(CreateAuthor),
   },
   {
-    path: appRoutes.author.get.template,
+    path: AppRoutes.author.get.template,
     element: withLayout(CreateAuthor),
+  },
+  {
+    path: AppRoutes.book.index,
+    element: withLayout(Books),
+  },
+  {
+    path: AppRoutes.book.create,
+    element: withLayout(CreateBook),
+  },
+  {
+    path: AppRoutes.book.update.template,
+    element: withLayout(CreateBook),
+  },
+  {
+    path: AppRoutes.book.get.template,
+    element: withLayout(CreateBook),
   },
 ]);
 

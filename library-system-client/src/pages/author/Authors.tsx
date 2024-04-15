@@ -5,7 +5,7 @@ import {
   useGetAllQuery,
 } from "../../api/author/authorApi";
 import { useNavigate } from "react-router-dom";
-import { appRoutes } from "../../routes/Routes";
+import { AppRoutes } from "../../routes/AppRoutes";
 import EditTwoToneIcon from "@mui/icons-material/EditNoteTwoTone";
 import DeleteForeverTwoToneIcon from "@mui/icons-material/DeleteForeverTwoTone";
 import AddCircleOutline from "@mui/icons-material/PersonAdd";
@@ -27,7 +27,7 @@ const Authors: FC = () => {
         <Button
           style={{ marginLeft: "auto" }}
           onClick={() => {
-            navigate(appRoutes.author.create);
+            navigate(AppRoutes.author.create);
           }}
         >
           <AddCircleOutline />
@@ -61,7 +61,7 @@ const Authors: FC = () => {
                   <Button
                     style={{ marginRight: "3%" }}
                     onClick={() =>
-                      navigate(appRoutes.author.update.route(author.id))
+                      navigate(AppRoutes.author.update.route(author.id))
                     }
                   >
                     <EditTwoToneIcon />
@@ -81,6 +81,7 @@ const Authors: FC = () => {
       )}
       {authorToDelete !== undefined && (
         <DeleteModal
+          title="Delete Author?"
           show={authorToDelete !== undefined}
           onConfirm={() => {
             deleteAuthor(authorToDelete.id).then(() => {

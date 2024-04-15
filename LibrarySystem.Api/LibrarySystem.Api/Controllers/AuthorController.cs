@@ -1,6 +1,6 @@
 ﻿using LibrarySystem.Api.Data;
 using LibrarySystem.Api.Models.Domain;
-using LibrarySystem.Api.Models.Dto;
+using LibrarySystem.Api.Models.Dto.AuthorDtos;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibrarySystem.Api.Controllers
@@ -12,7 +12,7 @@ namespace LibrarySystem.Api.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var data = _applicationDbContext.Authors.ToList();
+            var data = _applicationDbContext.Authors.Where(author => author.IsActive).ToList();
 
             var response = data
                 .Select(author => AuthorDto.Map(author))
@@ -25,7 +25,7 @@ namespace LibrarySystem.Api.Controllers
         [Route("{id}")]
         public IActionResult Get(int id)
         {
-            var author = _applicationDbContext.Authors.Find(id);
+            var author = _applicationDbContext.Authors.Where(author => author.IsActive).FirstOrDefault(author => author.Id == id);
 
             if (author == null)
             {
@@ -42,7 +42,9 @@ namespace LibrarySystem.Api.Controllers
             {
                 Name = author.Name,
                 Email = author.Email,
-                DateOfBirth = author.DateOfBirth
+                DateOfBirth = author.DateOfBirth,
+                IsActive = true,
+                CreatedAt = DateTime.Now
             };
 
             _applicationDbContext.Authors.Add(authorToCreate);
@@ -64,6 +66,8 @@ namespace LibrarySystem.Api.Controllers
             authorToUpdate.Name = author.Name;
             authorToUpdate.Email = author.Email;
             authorToUpdate.DateOfBirth = author.DateOfBirth;
+            authorToUpdate.IsActive = true;
+            authorToUpdate.UpdateAt = DateTime.Now;
 
             _applicationDbContext.Authors.Update(authorToUpdate);
             _applicationDbContext.SaveChanges();
@@ -76,16 +80,18 @@ namespace LibrarySystem.Api.Controllers
         [Route("{id}")]
         public IActionResult Delete(int id)
         {
-            var authorToUpdate = _applicationDbContext.Authors.Find(id);
-            if (authorToUpdate == null)
+            var authorToDelete = _applicationDbContext.Authors.Find(id);
+            if (authorToDelete == null)
             {
                 return NotFound();
             }
-
-            _applicationDbContext.Authors.Remove(authorToUpdate);
+            
+            authorToDelete.UpdateAt = DateTime.Now;
+            authorToDelete.IsActive = false;
+            _applicationDbContext.Authors.Update(authorToDelete);
             _applicationDbContext.SaveChanges();
 
-            return NoContent();
+            return Ok();
         }
 
         public AuthorController(ApplicationDbContext applicationDbContext)
