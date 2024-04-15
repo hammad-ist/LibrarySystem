@@ -1,7 +1,9 @@
 ﻿using LibrarySystem.Api.Data;
 using LibrarySystem.Api.Models.Domain;
 using LibrarySystem.Api.Models.Dto.AuthorDtos;
+using LibrarySystem.Api.Pagination;
 using Microsoft.AspNetCore.Mvc;
+using System.Numerics;
 
 namespace LibrarySystem.Api.Controllers
 {
@@ -12,11 +14,32 @@ namespace LibrarySystem.Api.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var data = _applicationDbContext.Authors.Where(author => author.IsActive).ToList();
+            var data = _applicationDbContext
+                .Authors
+                .Where(author => author.IsActive)
+                .ToList();
 
-            var response = data
+            var response = data.Select(x => AuthorDto.Map(x));
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("Page")]
+        public IActionResult GetPage(int pageNumber, int pageSize)
+        {
+            var data = _applicationDbContext
+                .Authors
+                .Where(author => author.IsActive)
+                .OrderBy(b => b.Id)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList()
                 .Select(author => AuthorDto.Map(author))
                 .ToList();
+
+            var count = _applicationDbContext.Authors.Count();
+            var totalPages = (int)Math.Ceiling(count / (double)pageSize);
+            var response = new PaginatedList<AuthorDto>(data, pageNumber, totalPages);
 
             return Ok(response);
         }
