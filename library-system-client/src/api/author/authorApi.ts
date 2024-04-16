@@ -1,6 +1,14 @@
 // Need to use the React-specific entry point to import createApi
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { Author, CreateOrUpdateAuthor } from "./authorModel";
+import type {
+  Author,
+  CreateOrUpdateAuthor,
+  PaginatedAuthor,
+} from "./authorModel";
+interface PaginationOptions {
+  pageNumber: number;
+  pageSize: number;
+}
 
 // Define a service using a base URL and expected endpoints
 export const authorApi = createApi({
@@ -8,6 +16,11 @@ export const authorApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: "https://localhost:7243/api" }),
   tagTypes: ["Author"],
   endpoints: (builder) => ({
+    getByPage: builder.mutation<PaginatedAuthor, PaginationOptions>({
+      query: ({ pageNumber, pageSize }) =>
+        `author/page?pageNumber=${pageNumber}&pageSize=${pageSize}`,
+      invalidatesTags: ["Author"],
+    }),
     getAll: builder.query<Author[], void>({
       query: (name) => `author`,
       providesTags: ["Author"],
@@ -45,6 +58,7 @@ export const authorApi = createApi({
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
 export const {
+  useGetByPageMutation,
   useGetAllQuery,
   useDeleteAuthorMutation,
   useUpdateAuthorMutation,

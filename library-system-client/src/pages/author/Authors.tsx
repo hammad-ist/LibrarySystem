@@ -1,24 +1,39 @@
-import { useState, FC } from "react";
+import { useState, FC, useEffect } from "react";
 import { Button, Container, Spinner, Table } from "react-bootstrap";
 import {
   useDeleteAuthorMutation,
   useGetAllQuery,
+  useGetByPageMutation,
 } from "../../api/author/authorApi";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { AppRoutes } from "../../routes/AppRoutes";
 import EditTwoToneIcon from "@mui/icons-material/EditNoteTwoTone";
 import DeleteForeverTwoToneIcon from "@mui/icons-material/DeleteForeverTwoTone";
 import AddCircleOutline from "@mui/icons-material/PersonAdd";
 import DeleteModal from "../../components/DeleteModal";
-import { Author } from "../../api/author/authorModel";
+import { Author, PaginatedAuthor } from "../../api/author/authorModel";
 import { toast } from "react-toastify";
+import PaginationComponent from "../../components/Pagination";
 
 const Authors: FC = () => {
+  let [searchParams, setSearchParams] = useSearchParams();
+
   const [deleteAuthor] = useDeleteAuthorMutation();
-  const { data, error, isLoading } = useGetAllQuery();
+  const [pageNumber, setPageNumber] = useState<number>(
+    searchParams.get("page") ? parseInt(searchParams.get("page")!) : 1
+  );
+  const [pageSize, setPageSize] = useState<number>(10);
+  const [getAuthorData, { data, error, isLoading }] = useGetByPageMutation();
   const [authorToDelete, setAuthorToDelete] = useState<Author | undefined>(
     undefined
   );
+
+  useEffect(() => {
+    const fetchAuthorData = async () => {
+      await getAuthorData({ pageNumber, pageSize });
+    };
+    fetchAuthorData();
+  }, [pageNumber, pageSize]);
 
   const navigate = useNavigate();
   return (
@@ -52,7 +67,7 @@ const Authors: FC = () => {
             </tr>
           </thead>
           <tbody>
-            {data!.map((author) => (
+            {data?.items?.map((author: Author) => (
               <tr key={author.id}>
                 <td>{author.name}</td>
                 <td>{author.email}</td>
@@ -93,6 +108,19 @@ const Authors: FC = () => {
             setAuthorToDelete(undefined);
           }}
         ></DeleteModal>
+      )}
+      {data && (
+        <PaginationComponent
+          authorData={data}
+          pageNumber={pageNumber}
+          setPageNumber={(page: number) => {
+            searchParams.set("page", page.toString());
+            setSearchParams(searchParams);
+            setPageNumber(page);
+          }}
+          pageSize={pageSize}
+          setPageSize={setPageSize}
+        />
       )}
     </Container>
   );

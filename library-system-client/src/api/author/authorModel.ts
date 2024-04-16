@@ -7,5 +7,12 @@ export interface CreateOrUpdateAuthor {
   email: string;
   dateOfBirth: string;
 }
+export interface PaginatedAuthor {
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+  items: Array<Author>;
+  pageNumber: number;
+  totalPages: number;
+}
 
 export type Author = Key & CreateOrUpdateAuthor;
