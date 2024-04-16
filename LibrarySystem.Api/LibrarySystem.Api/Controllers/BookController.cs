@@ -1,6 +1,8 @@
 ﻿using LibrarySystem.Api.Data;
 using LibrarySystem.Api.Models.Domain;
+using LibrarySystem.Api.Models.Dto.AuthorDtos;
 using LibrarySystem.Api.Models.Dto.BookDtos;
+using LibrarySystem.Api.Pagination;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +23,32 @@ namespace LibrarySystem.Api.Controllers
             var response = data.Select(book => GetBookDto.Map(book)).ToList();
             return Ok(response);
         }
+
+
+        [HttpGet]
+        [Route("Page")]
+        public IActionResult GetPage(int pageNumber, int pageSize)
+        {
+            var data = _applicationDbContext
+                .Books
+                .Include(book => book.Author)
+                .Where(book => book.IsActive)
+                .OrderBy(b => b.Id)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList()
+                .Select(book => GetBookDto.Map(book))
+                .ToList();
+
+            var count = _applicationDbContext.Books.Count();
+            var totalPages = (int)Math.Ceiling(count / (double)pageSize);
+            var response = new PaginatedList<GetBookDto>(data, pageNumber, totalPages);
+
+            return Ok(response);
+        }
+
+
+
         [HttpGet]
         [Route("{id}")]
 
