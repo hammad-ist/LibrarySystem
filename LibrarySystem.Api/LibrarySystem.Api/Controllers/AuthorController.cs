@@ -25,21 +25,23 @@ namespace LibrarySystem.Api.Controllers
 
         [HttpGet]
         [Route("Page")]
-        public IActionResult GetPage(int pageNumber, int pageSize)
+        public IActionResult GetPage(int pageNumber, int pageSize, string? searchTerm)
         {
             var data = _applicationDbContext
                 .Authors
-                .Where(author => author.IsActive)
-                .OrderBy(b => b.Id)
-                .Skip((pageNumber - 1) * pageSize)
+                .Where(author => author.IsActive && (searchTerm == "" || searchTerm == null || author.Name.ToLower().Contains(searchTerm.ToLower())))
+                .OrderBy(b => b.Name);
+
+            var pageData = data.Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToList()
                 .Select(author => AuthorDto.Map(author))
                 .ToList();
 
-            var count = _applicationDbContext.Authors.Count();
+            var count = data.Count();
+
             var totalPages = (int)Math.Ceiling(count / (double)pageSize);
-            var response = new PaginatedList<AuthorDto>(data, pageNumber, totalPages);
+            var response = new PaginatedList<AuthorDto>(pageData, pageNumber, totalPages);
 
             return Ok(response);
         }

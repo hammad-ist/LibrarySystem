@@ -8,5 +8,11 @@ export interface CreateOrUpdateBook {
   authorId: number;
   authorName: string;
 }
-
+export interface PaginatedBook {
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+  items: Array<Book>;
+  pageNumber: number;
+  totalPages: number;
+}
 export type Book = Key & CreateOrUpdateBook;

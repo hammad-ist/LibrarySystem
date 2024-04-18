@@ -1,4 +1,4 @@
-import { useEffect, FC } from "react";
+import { useEffect, FC, useState } from "react";
 import { Button, Container } from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -17,7 +17,7 @@ import dayjs from "dayjs";
 
 const CreateAuthor: FC = () => {
   const { id } = useParams();
-  const { data } = useGetAuthorQuery(id!);
+  const { data } = useGetAuthorQuery(id!, { skip: !id });
   const navigate = useNavigate();
   const {
     register,

@@ -17,7 +17,7 @@ import { useGetAllQuery } from "../../api/author/authorApi";
 const CreateBook: FC = () => {
   const getAuthorsQuery = useGetAllQuery();
   const { id } = useParams();
-  const { data } = useGetBookQuery(id!);
+  const { data } = useGetBookQuery(id!, { skip: !id });
   const navigate = useNavigate();
   const {
     register,

@@ -8,6 +8,7 @@ import type {
 interface PaginationOptions {
   pageNumber: number;
   pageSize: number;
+  searchTerm: string | null;
 }
 
 // Define a service using a base URL and expected endpoints
@@ -17,8 +18,8 @@ export const authorApi = createApi({
   tagTypes: ["Author"],
   endpoints: (builder) => ({
     getByPage: builder.mutation<PaginatedAuthor, PaginationOptions>({
-      query: ({ pageNumber, pageSize }) =>
-        `author/page?pageNumber=${pageNumber}&pageSize=${pageSize}`,
+      query: ({ pageNumber, pageSize, searchTerm }) =>
+        `author/page?pageNumber=${pageNumber}&pageSize=${pageSize}&searchTerm=${searchTerm}`,
       invalidatesTags: ["Author"],
     }),
     getAll: builder.query<Author[], void>({

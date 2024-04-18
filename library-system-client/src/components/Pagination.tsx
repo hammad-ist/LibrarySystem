@@ -1,8 +1,9 @@
 import { Pagination } from "react-bootstrap";
 import { PaginatedAuthor } from "../api/author/authorModel";
+import { PaginatedBook } from "../api/book/bookModel";
 
 interface Props {
-  authorData: PaginatedAuthor;
+  data: PaginatedAuthor | PaginatedBook;
   pageNumber: number;
   setPageNumber: Function;
   pageSize: number;
@@ -10,7 +11,7 @@ interface Props {
 }
 
 function PaginationComponent({
-  authorData,
+  data,
   pageNumber,
   setPageNumber,
   pageSize,
@@ -18,7 +19,7 @@ function PaginationComponent({
 }: Props) {
   const renderPaginationItems = () => {
     const items = [];
-    for (let number = 1; number <= authorData?.totalPages; number++) {
+    for (let number = 1; number <= data?.totalPages; number++) {
       items.push(
         <Pagination.Item
           key={number}
@@ -35,13 +36,13 @@ function PaginationComponent({
     <>
       <div style={{ display: "flex", justifyContent: "center" }}>
         <Pagination>
-          {authorData?.hasPreviousPage && (
+          {data?.hasPreviousPage && (
             <Pagination.Prev onClick={() => setPageNumber(pageNumber - 1)} />
           )}
 
           {renderPaginationItems()}
 
-          {authorData?.hasNextPage && (
+          {data?.hasNextPage && (
             <Pagination.Next onClick={() => setPageNumber(pageNumber + 1)} />
           )}
         </Pagination>
