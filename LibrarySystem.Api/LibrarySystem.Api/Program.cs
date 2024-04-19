@@ -1,5 +1,7 @@
 
 using LibrarySystem.Api.Data;
+using LibrarySystem.Api.Models;
+using LibrarySystem.Api.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace LibrarySystem.Api
@@ -27,6 +29,9 @@ namespace LibrarySystem.Api
 
             builder.Services.AddDbContext<ApplicationDbContext>(
                 options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
+            builder.Services.AddScoped<IUserService, UserService>();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
