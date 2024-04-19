@@ -3,12 +3,13 @@ using LibrarySystem.Api.Models.Domain;
 using LibrarySystem.Api.Models.Dto.AuthorDtos;
 using LibrarySystem.Api.Pagination;
 using Microsoft.AspNetCore.Mvc;
-using System.Numerics;
+using LibrarySystem.Api.Helpers;
 
 namespace LibrarySystem.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class AuthorController : ControllerBase
     {
         [HttpGet]
