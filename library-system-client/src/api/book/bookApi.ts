@@ -9,7 +9,16 @@ interface PaginationOptions {
 // Define a service using a base URL and expected endpoints
 export const bookApi = createApi({
   reducerPath: "bookApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "https://localhost:7243/api" }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: "https://localhost:7243/api",
+    prepareHeaders: (headers) => {
+      const token = sessionStorage.getItem("authToken");
+      if (token) {
+        headers.set("authorization", `Bearer ${token}`);
+      }
+      return headers;
+    },
+  }),
   tagTypes: ["Book"],
   endpoints: (builder) => ({
     getByPageBook: builder.mutation<PaginatedBook, PaginationOptions>({

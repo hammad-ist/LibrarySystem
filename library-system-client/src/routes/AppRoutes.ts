@@ -1,10 +1,10 @@
 export const AppRoutes = {
   authentication: {
-    login: "/login",
+    login: "/",
     signup: "/signup",
   },
   home: {
-    index: "/",
+    index: "/home",
   },
   author: {
     index: "/author",

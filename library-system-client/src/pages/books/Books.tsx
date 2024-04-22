@@ -1,17 +1,17 @@
 import { Button, Col, Container, Form, Row, Spinner } from "react-bootstrap";
 import { useGetByPageBookMutation } from "../../api/book/bookApi";
-import { AddCircleOutline } from "@mui/icons-material";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { AppRoutes } from "../../routes/AppRoutes";
 import Card from "react-bootstrap/Card";
-import EditTwoToneIcon from "@mui/icons-material/EditNoteTwoTone";
-import DeleteForeverTwoToneIcon from "@mui/icons-material/DeleteForeverTwoTone";
 import { Book } from "../../api/book/bookModel";
 import { useDeleteBookMutation } from "../../api/book/bookApi";
 import { FC, useEffect, useState } from "react";
 import DeleteModal from "../../components/DeleteModal";
 import { toast } from "react-toastify";
 import PaginationComponent from "../../components/Pagination";
+import { MdOutlineEditNote, MdDeleteForever } from "react-icons/md";
+import { IoAddCircleOutline } from "react-icons/io5";
+
 const pageSizeList = [
   {
     id: 1,
@@ -114,7 +114,7 @@ const Books: FC = () => {
               navigate(AppRoutes.author.create);
             }}
           >
-            <AddCircleOutline />
+            <IoAddCircleOutline size={25} />
             Create
           </Button>
         </Col>
@@ -149,14 +149,14 @@ const Books: FC = () => {
                       setBookToDelete(book);
                     }}
                   >
-                    <DeleteForeverTwoToneIcon />
+                    <MdDeleteForever size={25} />
                   </Button>
                   <Button
                     onClick={() => {
                       navigate(AppRoutes.book.update.route(book.id));
                     }}
                   >
-                    <EditTwoToneIcon />
+                    <MdOutlineEditNote size={25} />
                   </Button>
                 </Container>
               </Card>

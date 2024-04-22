@@ -10,18 +10,16 @@ import {
 } from "react-bootstrap";
 import {
   useDeleteAuthorMutation,
-  useGetAllQuery,
   useGetByPageMutation,
 } from "../../api/author/authorApi";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { AppRoutes } from "../../routes/AppRoutes";
-import EditTwoToneIcon from "@mui/icons-material/EditNoteTwoTone";
-import DeleteForeverTwoToneIcon from "@mui/icons-material/DeleteForeverTwoTone";
-import AddCircleOutline from "@mui/icons-material/PersonAdd";
+import { MdOutlineEditNote, MdDeleteForever } from "react-icons/md";
 import DeleteModal from "../../components/DeleteModal";
-import { Author, PaginatedAuthor } from "../../api/author/authorModel";
+import { Author } from "../../api/author/authorModel";
 import { toast } from "react-toastify";
 import PaginationComponent from "../../components/Pagination";
+import { IoAddCircleOutline } from "react-icons/io5";
 const pageSizeList = [
   {
     id: 1,
@@ -117,7 +115,7 @@ const Authors: FC = () => {
               navigate(AppRoutes.author.create);
             }}
           >
-            <AddCircleOutline />
+            <IoAddCircleOutline size={25} />
             Create
           </Button>
         </Col>
@@ -154,14 +152,14 @@ const Authors: FC = () => {
                         navigate(AppRoutes.author.update.route(author.id))
                       }
                     >
-                      <EditTwoToneIcon />
+                      <MdOutlineEditNote size={25} />
                     </Button>
                     <Button
                       onClick={() => {
                         setAuthorToDelete(author);
                       }}
                     >
-                      <DeleteForeverTwoToneIcon />
+                      <MdDeleteForever size={25} />
                     </Button>
                   </td>
                 </tr>

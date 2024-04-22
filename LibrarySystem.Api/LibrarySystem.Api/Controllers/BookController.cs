@@ -1,4 +1,5 @@
 ﻿using LibrarySystem.Api.Data;
+using LibrarySystem.Api.Helpers;
 using LibrarySystem.Api.Models.Domain;
 using LibrarySystem.Api.Models.Dto.AuthorDtos;
 using LibrarySystem.Api.Models.Dto.BookDtos;
@@ -11,6 +12,7 @@ namespace LibrarySystem.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class BookController : ControllerBase
     {
         [HttpGet]

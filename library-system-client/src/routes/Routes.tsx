@@ -8,51 +8,57 @@ import Books from "../pages/books/Books";
 import CreateBook from "../pages/books/CreateBook";
 import Login from "../pages/login/Login";
 import SignUp from "../pages/signup/SignUp";
+import ProtectedRoutes from "./ProtectedRoutes";
 
 const router = createBrowserRouter([
   {
     path: AppRoutes.authentication.login,
-    element: withLayout(Login),
+    element: <Login />,
   },
   {
     path: AppRoutes.authentication.signup,
-    element: withLayout(SignUp),
+    element: <SignUp />,
   },
   {
-    path: AppRoutes.home.index,
-    element: withLayout(Home),
-  },
-  {
-    path: AppRoutes.author.index,
-    element: withLayout(Authors),
-  },
-  {
-    path: AppRoutes.author.create,
-    element: withLayout(CreateAuthor),
-  },
-  {
-    path: AppRoutes.author.update.template,
-    element: withLayout(CreateAuthor),
-  },
-  {
-    path: AppRoutes.author.get.template,
-    element: withLayout(CreateAuthor),
-  },
-  {
-    path: AppRoutes.book.index,
-    element: withLayout(Books),
-  },
-  {
-    path: AppRoutes.book.create,
-    element: withLayout(CreateBook),
-  },
-  {
-    path: AppRoutes.book.update.template,
-    element: withLayout(CreateBook),
-  },
-  {
-    path: AppRoutes.book.get.template,
-    element: withLayout(CreateBook),
+    element: <ProtectedRoutes />,
+    children: [
+      {
+        path: AppRoutes.home.index,
+        element: withLayout(Home),
+      },
+      {
+        path: AppRoutes.author.index,
+        element: withLayout(Authors),
+      },
+      {
+        path: AppRoutes.author.create,
+        element: withLayout(CreateAuthor),
+      },
+      {
+        path: AppRoutes.author.update.template,
+        element: withLayout(CreateAuthor),
+      },
+      {
+        path: AppRoutes.author.get.template,
+        element: withLayout(CreateAuthor),
+      },
+      {
+        path: AppRoutes.book.index,
+        element: withLayout(Books),
+      },
+      {
+        path: AppRoutes.book.create,
+        element: withLayout(CreateBook),
+      },
+      {
+        path: AppRoutes.book.update.template,
+        element: withLayout(CreateBook),
+      },
+      {
+        path: AppRoutes.book.get.template,
+        element: withLayout(CreateBook),
+      },
+    ],
   },
 ]);
 

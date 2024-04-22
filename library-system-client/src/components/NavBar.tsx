@@ -4,9 +4,13 @@ import Navbar from "react-bootstrap/Navbar";
 import { AppRoutes } from "../routes/AppRoutes";
 import { Link } from "react-router-dom";
 import { FC } from "react";
-import { Button, Form } from "react-bootstrap";
+import { FaUser } from "react-icons/fa";
 
 const NavigationBar: FC = () => {
+  const logOut = () => {
+    sessionStorage.setItem("authToken", "");
+    sessionStorage.setItem("userName", "");
+  };
   return (
     <Navbar expand="lg" className="bg-body-tertiary">
       <Container>
@@ -22,6 +26,19 @@ const NavigationBar: FC = () => {
             </Link>
             <Link to={AppRoutes.book.index} className="nav-link">
               Books
+            </Link>
+          </Nav>
+          <Nav>
+            <Nav.Link>
+              <FaUser size={15} />
+              {sessionStorage.getItem("userName")?.toUpperCase()}
+            </Nav.Link>
+            <Link
+              to={AppRoutes.authentication.login}
+              className="nav-link"
+              onClick={logOut}
+            >
+              Logout
             </Link>
           </Nav>
         </Navbar.Collapse>
